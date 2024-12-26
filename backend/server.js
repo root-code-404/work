@@ -26,12 +26,21 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 // Middleware
+const allowedOrigins = ['https://mo4work.netlify.app', 'http://localhost:5173'];
+
 app.use(
     cors({
-        origin: ['https://mo4work.netlify.app'],
+        origin: (origin, callback) => {
+            if (!origin || allowedOrigins.includes(origin)) {
+                callback(null, true);
+            } else {
+                callback(new Error('Not allowed by CORS'));
+            }
+        },
         credentials: true,
     })
 );
+
 app.use(express.json());
 app.use('/uploads', express.static('uploads')); // Serve uploaded images as static files
 
