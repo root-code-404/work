@@ -28,7 +28,7 @@ const port = process.env.PORT || 5000;
 // Middleware
 app.use(
     cors({
-        origin: ['https://mo4work.netlify.app/'],
+        origin: ['https://mo4work.netlify.app'],
         credentials: true,
     })
 );
