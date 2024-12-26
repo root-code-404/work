@@ -89,7 +89,7 @@ const SignupForm = () => {
                             <option value="">Select User Type</option>
                             {/* <option value="0">Admin</option> */}
                             <option value="1">User</option>
-                            <option value="2">Moderator</option>
+                           
                         </Form.Control>
                     </Form.Group>
 
