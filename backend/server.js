@@ -5,7 +5,6 @@ const userRoutes = require('./routes/login/userRoutes'); // Import user routes
 const carRoutes = require('./routes/vehicles/car/carRoutes'); // Import car routes
 const bikeRoutes = require('./routes/vehicles/bike/bikeRoutes'); // Import bike routes
 const menRoutes = require('./routes/clothes/men/menRoutes'); // Import men routes
-
 const cartRoutes = require('./routes/cart/cartRoutes'); // Import cart routes
 const purchaseRoutes = require('./routes/purchase/purchaseRoutes'); // Import purchase routes
 const itemRoutes = require('./routes/item/itemRoutes'); // Import item routes
@@ -18,7 +17,7 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 // Middleware
-const allowedOrigins = ['https://mo4work.netlify.app', 'http://localhost:5173'];
+const allowedOrigins = ['http://192.168.1.5:5173', 'https://mo4work.netlify.app']; // Replace with your local IP
 
 app.use(
     cors({

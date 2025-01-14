@@ -19,7 +19,8 @@ const SignupForm = () => {
         }
 
         try {
-            await axios.post('http://localhost:5000/api/users/signup', { email, password, userType, name });
+            // Replace localhost with your local IP address
+            await axios.post('http://192.168.1.5:5000/api/users/signup', { email, password, userType, name });
             alert('Signup successful!');
             navigate('/login');
         } catch (error) {
@@ -87,9 +88,7 @@ const SignupForm = () => {
                             className="rounded-lg px-4 py-2 flex-grow shadow-md focus:shadow-md focus:outline-none transition-all"
                         >
                             <option value="">Select User Type</option>
-                            {/* <option value="0">Admin</option> */}
                             <option value="1">User</option>
-                           
                         </Form.Control>
                     </Form.Group>
 
