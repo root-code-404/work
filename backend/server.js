@@ -6,19 +6,11 @@ const carRoutes = require('./routes/vehicles/car/carRoutes'); // Import car rout
 const bikeRoutes = require('./routes/vehicles/bike/bikeRoutes'); // Import bike routes
 const menRoutes = require('./routes/clothes/men/menRoutes'); // Import men routes
 
-const cartRoutes = require('./routes/cart/cartRoutes'); // Import car routes
-const purchaseRoutes = require('./routes/purchase/purchaseRoutes'); // Import car routes
+const cartRoutes = require('./routes/cart/cartRoutes'); // Import cart routes
+const purchaseRoutes = require('./routes/purchase/purchaseRoutes'); // Import purchase routes
 const itemRoutes = require('./routes/item/itemRoutes'); // Import item routes
-const itemTypeRoutes = require('./routes/item/itemTypeRoutes'); // Import item routes
-const purchaseListRoutes = require('./routes/purchase/purchaseListRoutes'); // Import car routes
-
-
-// const recommendationRoutes = require('./routes/recommendation/recommendationRoutes'); // Import item routes
-
-
-
-// const sitemapRoutes = require('./routes/sitemapRoutes');
-// const path = require('path');
+const itemTypeRoutes = require('./routes/item/itemTypeRoutes'); // Import item type routes
+const purchaseListRoutes = require('./routes/purchase/purchaseListRoutes'); // Import purchase list routes
 
 require('dotenv').config();
 
@@ -31,15 +23,20 @@ const allowedOrigins = ['https://mo4work.netlify.app', 'http://localhost:5173'];
 app.use(
     cors({
         origin: (origin, callback) => {
-            if (!origin || allowedOrigins.includes(origin)) {
+            if (!origin || allowedOrigins.some((allowedOrigin) => origin.startsWith(allowedOrigin))) {
                 callback(null, true);
             } else {
-                callback(new Error('Not allowed by CORS'));
+                callback(new Error(`CORS error: Origin ${origin} not allowed by CORS policy.`));
             }
         },
-        credentials: true,
+        credentials: true, // If using cookies or auth headers
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allowed HTTP methods
+        allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
     })
 );
+
+// Handle preflight requests for all routes
+app.options('*', cors());
 
 app.use(express.json());
 app.use('/uploads', express.static('uploads')); // Serve uploaded images as static files
@@ -47,36 +44,27 @@ app.use('/uploads', express.static('uploads')); // Serve uploaded images as stat
 // Database connection
 connectDB();
 
-// Use user routes
-app.use('/api/users', userRoutes); 
-//Car Routes
+// Routes
+app.use('/api/users', userRoutes);
 app.use('/api/cars', carRoutes);
-//Bike Routes
 app.use('/api/bikes', bikeRoutes);
-//Men Routes
 app.use('/api/men', menRoutes);
-// Cart routes
 app.use('/api/cart', cartRoutes);
-
-//purchase Routes
 app.use('/api/purchase', purchaseRoutes);
-//Item Routes
 app.use('/api/items', itemRoutes);
-
 app.use('/api/itemtype', itemTypeRoutes);
 app.use('/api/purchases', purchaseListRoutes);
 
+// Error handling middleware
+app.use((err, req, res, next) => {
+    console.error(err.message);
+    if (err instanceof Error && err.message.includes('CORS')) {
+        res.status(403).json({ error: 'CORS error: Access denied.' });
+    } else {
+        res.status(500).json({ error: 'Internal server error.' });
+    }
+});
 
-
-// app.use('/api/recommendation', recommendationRoutes);
-
-
-// app.use('/', sitemapRoutes);
-// app.use(express.static(path.join(__dirname, 'client/build')));
-
-// app.get('*', (req, res) => {
-//   res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
-// });
 // Start server
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
